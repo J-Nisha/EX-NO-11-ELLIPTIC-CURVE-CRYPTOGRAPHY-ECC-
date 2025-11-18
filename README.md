@@ -23,10 +23,50 @@ To Implement ELLIPTIC CURVE CRYPTOGRAPHY(ECC)
 5. Security: ECC’s security relies on the Elliptic Curve Discrete Logarithm Problem (ECDLP), making it highly secure with shorter key lengths compared to traditional methods like RSA.
 
 ## Program:
-
-
+```
+class Point:  
+def init(self,x,y): self.x,self.y=x,y 
+def mod_inv(a,m):  
+m0,x0,x1=m,0,1  
+while a>1:  
+q=a//m; a,m=m,a%m  
+x0,x1=x1 - q*x0,x0  
+return x1+m0 if x1<0 else x1 
+def point_add(P,Q,a,p):  
+if P.x==Q.x and P.y==Q.y:  
+num=3P.x**2+a  
+den=mod_inv(2P.y,p)  
+else:  
+num=Q.y-P.y  
+den=mod_inv(Q.x-P.x,p)  
+lam=(numden)%p  
+x_r=(lam**2-P.x-Q.x)%p  
+y_r=(lam(P.x - x_r)-P.y)%p  
+return Point(x_r,y_r) 
+def scalar_mul(P,k,a,p):  
+R=P for _ in range(k-1):  
+R=point_add(R,P,a,p)  
+return R 
+p=int(input("p: "))  
+a=int(input("a: "))  
+b=int(input("b: "))  
+G=Point(int(input("G.x: ")),int(input("G.y: ")))  
+dA=int(input("Alice priv: "))  
+dB=int(input("Bob priv: ")) 
+PA=scalar_mul(G,dA,a,p)  
+PB=scalar_mul(G,dB,a,p)  
+print(f"Alice pub: ({PA.x},{PA.y})")  
+print(f"Bob pub: ({PB.x},{PB.y})") 
+SA=scalar_mul(PB,dA,a,p)  
+SB=scalar_mul(PA,dB,a,p)  
+print(f"Alice shared: ({SA.x},{SA.y})")  
+print(f"Bob shared: ({SB.x},{SB.y})")  
+print("Success" if SA.x==SB.x and SA.y==SB.y else "Fail")
+```
 
 ## Output:
+<img width="655" height="325" alt="image" src="https://github.com/user-attachments/assets/08c8b0b7-dbe2-4dc4-aa78-36a37ba78485" />
+
 
 
 ## Result:
